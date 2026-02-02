@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Admin | Post Jobs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .tg-bg {
+            background-color: #7095b3;
+            background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4 md:p-8">
+
+    <div
+        class="max-w-6xl w-full bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-slate-100">
+
+        <!-- Left: Form Section -->
+        <div class="flex-1 p-8 lg:p-12 border-b md:border-b-0 md:border-r border-slate-100">
+            <div class="mb-8">
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Post New Job</h1>
+                <p class="text-slate-500 mt-2">Broadcast a new opportunity to all your <span
+                        class="text-indigo-600 font-semibold italic">Premium Members</span> instantly.</p>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Job
+                        Title</label>
+                    <input type="text" id="title"
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all duration-200 placeholder:text-slate-400"
+                        placeholder="e.g. Senior Product Designer">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Description
+                        <span class="text-xs font-normal text-slate-400 font-mono">(HTML allowed)</span></label>
+                    <textarea id="description"
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all duration-200 h-32 resize-none placeholder:text-slate-400"
+                        placeholder="<b>Role:</b> Full-time&#10;<b>Salary:</b> $5000/mo"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Button
+                            Text</label>
+                        <input type="text" id="btn-name"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all duration-200 placeholder:text-slate-400"
+                            placeholder="Apply Now">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Button
+                            Link</label>
+                        <input type="url" id="btn-link"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all duration-200 placeholder:text-slate-400"
+                            placeholder="https://...">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Target
+                        Category</label>
+                    <select id="category-id"
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all duration-200 appearance-none">
+                        <option value="" disabled selected>Select a category</option>
+                    </select>
+                </div>
+
+                <button id="submit-btn"
+                    class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                    🚀 Broadcast to Premium Users
+                </button>
+
+                <div id="status" class="hidden text-center p-4 rounded-xl font-medium"></div>
+            </div>
+        </div>
+
+        <!-- Right: Mobile/Telegram Preview -->
+        <div class="flex-1 tg-bg p-8 lg:p-12 flex items-center justify-center relative">
+            <span class="absolute top-6 left-8 text-white/50 text-xs font-bold uppercase tracking-widest">Telegram
+                Preview</span>
+
+            <div class="w-full max-w-[340px] flex flex-col items-start translate-y-4">
+                <!-- Message Bubble -->
+                <div class="bg-white rounded-2xl rounded-bl-none p-4 shadow-xl relative w-full">
+                    <!-- Tail -->
+                    <div class="absolute -left-3 bottom-0 w-4 h-4 bg-white"
+                        style="clip-path: polygon(100% 0, 100% 100%, 0 100%);"></div>
+
+                    <div class="text-[15px] leading-relaxed text-slate-900">
+                        🌟 <span class="font-bold">New Job Posting!</span><br><br>
+                        📌 <span id="preview-title" class="font-bold">UI/UX Designer</span><br><br>
+                        <div id="preview-desc" class="text-slate-700 whitespace-pre-line">Your description will appear
+                            here as you type. Use bold or italic tags for emphasis.</div>
+                    </div>
+                </div>
+
+                <!-- Inline Button -->
+                <div
+                    class="w-full mt-2 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl py-2.5 text-center text-white font-medium text-sm transition-all hover:bg-black/40 cursor-default">
+                    <span id="preview-btn">Apply Now</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const titleInput = document.getElementById('title');
+        const descInput = document.getElementById('description');
+        const btnNameInput = document.getElementById('btn-name');
+        const btnLinkInput = document.getElementById('btn-link');
+        const submitBtn = document.getElementById('submit-btn');
+
+        const previewTitle = document.getElementById('preview-title');
+        const previewDesc = document.getElementById('preview-desc');
+        const previewBtn = document.getElementById('preview-btn');
+        const statusDiv = document.getElementById('status');
+
+        const categorySelect = document.getElementById('category-id');
+
+        async function loadCategories() {
+            try {
+                const response = await fetch('/api/categories');
+                const categories = await response.json();
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.id;
+                    option.textContent = cat.name;
+                    categorySelect.appendChild(option);
+                });
+            } catch (err) {
+                console.error('Failed to load categories', err);
+            }
+        }
+
+        loadCategories();
+
+        function updatePreview() {
+            previewTitle.innerText = titleInput.value || 'Job Title';
+            // Simple sanitization/formatting
+            let desc = descInput.value || 'Your description will appear here as you type. Use bold or italic tags for emphasis.';
+            desc = desc.replace(/\n/g, '<br>');
+            // Very basic HTML support for preview
+            previewDesc.innerHTML = desc;
+            previewBtn.innerText = btnNameInput.value || 'Apply Now';
+        }
+
+        [titleInput, descInput, btnNameInput, btnLinkInput].forEach(el => {
+            el.addEventListener('input', updatePreview);
+        });
+
+        submitBtn.addEventListener('click', async () => {
+            const data = {
+                title: titleInput.value,
+                description: descInput.value,
+                buttonName: btnNameInput.value,
+                buttonLink: btnLinkInput.value,
+                categoryId: categorySelect.value
+            };
+
+            if (!data.title || !data.description || !data.buttonName || !data.buttonLink || !data.categoryId) {
+                showStatus('⚠️ Please complete all fields', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = '⚡ Broadcasting...';
+            hideStatus();
+
+            try {
+                const response = await fetch('/api/post-job', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus(`🎯 Broadcast complete! Sent to ${result.count} premium users.`, 'success');
+                    [titleInput, descInput, btnNameInput, btnLinkInput].forEach(el => el.value = '');
+                    updatePreview();
+                } else {
+                    showStatus('❌ ' + (result.error || 'Failed to send'), 'error');
+                }
+            } catch (err) {
+                showStatus('❌ Server communication error', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = '🚀 Broadcast to Premium Users';
+            }
+        });
+
+        function showStatus(msg, type) {
+            statusDiv.innerText = msg;
+            statusDiv.classList.remove('hidden', 'bg-red-50', 'text-red-600', 'bg-green-50', 'text-green-600');
+            if (type === 'success') {
+                statusDiv.classList.add('bg-green-50', 'text-green-600');
+            } else {
+                statusDiv.classList.add('bg-red-50', 'text-red-600');
+            }
+        }
+
+        function hideStatus() {
+            statusDiv.classList.add('hidden');
+        }
+    </script>
+
+</body>
+
+</html>
