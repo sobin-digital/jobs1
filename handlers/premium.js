@@ -21,6 +21,16 @@ module.exports = (bot) => {
             const isPremium = await checkPremium(chatId);
             const currentPlan = user.premium_plan || 0;
 
+            const isAdmin = chatId.toString() === process.env.ADMIN_ID;
+
+            // Define prices based on user role (Admin gets $1 for all plans)
+            const prices = {
+                1: isAdmin ? '1' : '5',
+                3: isAdmin ? '1' : '12',
+                6: isAdmin ? '1' : '20',
+                12: isAdmin ? '1' : '26'
+            };
+
             let statusText = '';
             if (isPremium) {
                 const expiryDate = new Date(user.premium_expiry).toLocaleDateString();
@@ -37,10 +47,10 @@ ${statusText}
 ✅ <b>No Ads:</b> Pure job hunting experience.
 
 <b>Choose your plan:</b>
-🎗️ 1 Month — <b>$5</b>
-🥉 3 Months — <b>$12</b>
-🥈 6 Months — <b>$20</b>
-🥇 12 Months — <b>$26</b>
+🎗️ 1 Month — <b>$${prices[1]}</b>
+🥉 3 Months — <b>$${prices[3]}</b>
+🥈 6 Months — <b>$${prices[6]}</b>
+🥇 12 Months — <b>$${prices[12]}</b>
 
 👇 Click below to upgrade and start your career in UAE!
             `;
@@ -53,10 +63,10 @@ ${statusText}
             const opts = {
                 reply_markup: {
                     inline_keyboard: [
-                        [{ text: getBtnText('🎗️ 1 Month', '5', 1), callback_data: isPremium && currentPlan === 1 ? 'plan_already_active' : 'upgrade_1_5' }],
-                        [{ text: getBtnText('🥉 3 Months', '12', 3), callback_data: isPremium && currentPlan === 3 ? 'plan_already_active' : 'upgrade_3_12' }],
-                        [{ text: getBtnText('🥈 6 Months', '20', 6), callback_data: isPremium && currentPlan === 6 ? 'plan_already_active' : 'upgrade_6_20' }],
-                        [{ text: getBtnText('🥇 12 Months', '26', 12), callback_data: isPremium && currentPlan === 12 ? 'plan_already_active' : 'upgrade_12_26' }],
+                        [{ text: getBtnText('🎗️ 1 Month', prices[1], 1), callback_data: isPremium && currentPlan === 1 ? 'plan_already_active' : `upgrade_1_${prices[1]}` }],
+                        [{ text: getBtnText('🥉 3 Months', prices[3], 3), callback_data: isPremium && currentPlan === 3 ? 'plan_already_active' : `upgrade_3_${prices[3]}` }],
+                        [{ text: getBtnText('🥈 6 Months', prices[6], 6), callback_data: isPremium && currentPlan === 6 ? 'plan_already_active' : `upgrade_6_${prices[6]}` }],
+                        [{ text: getBtnText('🥇 12 Months', prices[12], 12), callback_data: isPremium && currentPlan === 12 ? 'plan_already_active' : `upgrade_12_${prices[12]}` }],
                         [{ text: '❓ How it works', callback_data: 'premium_help' }]
                     ]
                 },
